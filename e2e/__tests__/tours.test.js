@@ -130,4 +130,24 @@ describe('tour api', () => {
         expect(body.length).toBe(0);
       });
   });
+
+  it('updates attendance of a stop', () => {
+    let getTour;
+    return postTour(tour)
+      .then(returnedTour => {
+        getTour = returnedTour;
+        return request
+          .post(`/api/tours/${getTour._id}/stops`)
+          .send(stop);
+      })
+      .then(({ body }) => {
+        expect(body[0].attendance).toBe(stop.attendance);
+        return request
+          .put(`/api/tours/${getTour._id}/stops/${body[0]._id}/attendance`)
+          .send({ attendance: 420 })
+          .expect(200);
+      }).then(({ body }) => {
+        expect(body[0].attendance).toBe(420);
+      });
+  });
 });
