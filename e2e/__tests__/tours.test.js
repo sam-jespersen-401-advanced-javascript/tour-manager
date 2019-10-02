@@ -54,7 +54,8 @@ describe('tour api', () => {
         expect(body.length).toBe(3);
         expect(body[0]).toMatchInlineSnapshot(
           {
-            _id: expect.any(String)
+            _id: expect.any(String),
+            launchDate: expect.any(String)
           },
           `
           Object {
@@ -64,7 +65,7 @@ describe('tour api', () => {
               "moshpit",
               "ballpit",
             ],
-            "launchDate": "2019-04-20T07:00:00.000Z",
+            "launchDate": Any<String>,
             "stops": Array [],
             "title": "A Grand Tour",
           }
@@ -111,15 +112,12 @@ describe('tour api', () => {
     });
   });
 
-
   it('deletes a stop', () => {
     let getTour;
     return postTour(tour)
       .then(returnedTour => {
         getTour = returnedTour;
-        return request
-          .post(`/api/tours/${getTour._id}/stops`)
-          .send(stop);
+        return request.post(`/api/tours/${getTour._id}/stops`).send(stop);
       })
       .then(({ body }) => {
         return request
@@ -136,9 +134,7 @@ describe('tour api', () => {
     return postTour(tour)
       .then(returnedTour => {
         getTour = returnedTour;
-        return request
-          .post(`/api/tours/${getTour._id}/stops`)
-          .send(stop);
+        return request.post(`/api/tours/${getTour._id}/stops`).send(stop);
       })
       .then(({ body }) => {
         expect(body[0].attendance).toBe(stop.attendance);
@@ -146,7 +142,8 @@ describe('tour api', () => {
           .put(`/api/tours/${getTour._id}/stops/${body[0]._id}/attendance`)
           .send({ attendance: 420 })
           .expect(200);
-      }).then(({ body }) => {
+      })
+      .then(({ body }) => {
         expect(body[0].attendance).toBe(420);
       });
   });
