@@ -32,4 +32,20 @@ describe('tour api', () => {
       });
   });
 
+  it('gets all tours', () => {
+    return Promise.all([
+      postTour(tour),
+      postTour(tour),
+      postTour(tour)
+    ])
+      .then(() => {
+        return request
+          .get('/api/tours')
+          .expect(200);
+      })
+      .then(({ body }) => {
+        expect(body.length).toBe(3);
+      });
+  });
+
 });
