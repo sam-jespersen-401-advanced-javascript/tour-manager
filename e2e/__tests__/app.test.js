@@ -1,8 +1,7 @@
 const request = require('../request');
 
 describe('core app api', () => {
-  it
-  ('is alive', () => {
+  it('is alive', () => {
     return request
       .get('/hello')
       .expect(200)
