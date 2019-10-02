@@ -2,7 +2,7 @@ jest.mock('../../lib/services/maps-api');
 jest.mock('../../lib/services/weather-api');
 const request = require('../request');
 const db = require('../db');
-const { matchMongoId } = require('../match-helpers');
+// const { matchMongoId } = require('../match-helpers');
 const getLocation = require('../../lib/services/maps-api');
 const getWeather = require('../../lib/services/weather-api');
 
@@ -12,7 +12,6 @@ getLocation.mockResolvedValue({
 });
 
 getWeather.mockResolvedValue({
-  time: new Date(),
   forecast: 'Partly Cloudy'
 });
 
@@ -110,5 +109,25 @@ describe('tour api', () => {
           );
         });
     });
+  });
+
+
+  it('deletes a stop', () => {
+    let getTour;
+    return postTour(tour)
+      .then(returnedTour => {
+        getTour = returnedTour;
+        return request
+          .post(`/api/tours/${getTour._id}/stops`)
+          .send(stop);
+      })
+      .then(({ body }) => {
+        return request
+          .delete(`/api/tours/${getTour._id}/stops/${body[0]._id}`)
+          .expect(200);
+      })
+      .then(({ body }) => {
+        expect(body.length).toBe(0);
+      });
   });
 });
