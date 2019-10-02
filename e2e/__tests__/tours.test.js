@@ -22,30 +22,40 @@ describe('tour api', () => {
   }
 
   it('post a tour', () => {
-    return postTour(tour)
-      .then(tour => {
-        expect(tour).toEqual({
-          _id: expect.any(String),
-          __v: 0,
-          ...tour
-        });
+    return postTour(tour).then(tour => {
+      expect(tour).toEqual({
+        _id: expect.any(String),
+        __v: 0,
+        ...tour
       });
+    });
   });
 
   it('gets all tours', () => {
-    return Promise.all([
-      postTour(tour),
-      postTour(tour),
-      postTour(tour)
-    ])
+    return Promise.all([postTour(tour), postTour(tour), postTour(tour)])
       .then(() => {
-        return request
-          .get('/api/tours')
-          .expect(200);
+        return request.get('/api/tours').expect(200);
       })
       .then(({ body }) => {
         expect(body.length).toBe(3);
+        expect(body[0]).toMatchInlineSnapshot(
+          {
+            _id: expect.any(String)
+          },
+          `
+          Object {
+            "__v": 0,
+            "_id": Any<String>,
+            "activities": Array [
+              "moshpit",
+              "ballpit",
+            ],
+            "launchDate": "2019-04-20T07:00:00.000Z",
+            "stops": Array [],
+            "title": "A Grand Tour",
+          }
+        `
+        );
       });
   });
-
 });
